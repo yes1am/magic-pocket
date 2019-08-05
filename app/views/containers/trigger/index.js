@@ -1,15 +1,9 @@
-import React, { Component } from 'react'
-import Portal from './portal'
+import React, { useState } from 'react'
+import Trigger from './trigger'
 
-export default class componentName extends Component {
-  render () {
-    return (
-      <div>
-        <Portal>
-          <div>123</div>
-        </Portal>
-        trigger
-      </div>
-    )
-  }
+export default (props) => {
+  const [visible, setVisible] = useState(false)
+  return <Trigger onVisibleChange={(visible) => { setVisible(visible) }} popup={<span>123</span>} visible={visible} >
+    <span style={{ marginTop: 20, display: 'inline-block' }}>hello</span>
+  </Trigger>
 }
