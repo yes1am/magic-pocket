@@ -3,7 +3,7 @@
   font-size: 20px;
 }
 
-.example-enter {
+/* .example-enter {
   opacity: 0;
 }
 
@@ -19,4 +19,19 @@
 .example-leave.example-leave-active {
   opacity: 0;
   transition: opacity 300ms ease-in;
+} */
+
+.my-node-enter {
+  opacity: 0;
+}
+.my-node-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+.my-node-exit {
+  opacity: 1;
+}
+.my-node-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
 }
