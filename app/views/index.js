@@ -3,6 +3,6 @@ import ReactDOM from 'react-dom'
 import Container from './containers'
 
 ReactDOM.render(
-  <Container.Trigger />,
+  <Container.Transition />,
   document.getElementById('root')
 )

@@ -22,7 +22,6 @@ function createChainedFunction () {
 class Trigger extends Component {
   constructor (props) {
     super(props)
-    // document.addEventListener('click', () => { console.log(123) })
     const visible = typeof props.visible === 'undefined' ? props.defaultVisible : props.visible
     this.state = {
       visible
@@ -52,9 +51,10 @@ class Trigger extends Component {
   }
 
   getComponent () {
-    this.componentRendered = true
+    this.isComponentHasRendered = true
     const { visible } = this.state
     const { popup } = this.props
+    // this === Trigger.children
     return <Popup
       ref={this.popupRef}
       wrap={this}
@@ -72,7 +72,7 @@ class Trigger extends Component {
   onDocumentClick (event) {
     const target = event.target
     const root = ReactDOM.findDOMNode(this)
-    // console.log(target, root, ReactDOM.findDOMNode(this.popupRef.current), Dom.contains(root, target))
+    // root === Trigger.children
     if (!Dom.contains(root, target) && !Dom.contains(ReactDOM.findDOMNode(this.popupRef.current), target)) {
       this.setVisible(false)
     }
@@ -113,7 +113,8 @@ class Trigger extends Component {
 
     let trigger = React.cloneElement(child, newChildProps)
     let portal = null
-    if (this.state.visible || this.componentRendered) {
+    // if this.isComponentHasRendered, not remove the body > div
+    if (this.state.visible || this.isComponentHasRendered) {
       portal = <Portal key='portal'>
         {this.getComponent()}
       </Portal>

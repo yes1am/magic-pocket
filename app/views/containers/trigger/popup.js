@@ -9,8 +9,9 @@ const duration = 200
 
 const defaultStyle = {
   // transition: `all ${duration}ms ease-in-out`,
-  // position: 'absolute',
-  transformOrigin: 'top'
+  position: 'absolute',
+  transformOrigin: 'left',
+  background: 'red'
 }
 
 const transitionStyles = {

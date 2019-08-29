@@ -1,0 +1,25 @@
+digraph {
+  // nodesep=1.0 // increases the separation between nodes
+  node [color=Red,fontname=Courier,shape=box] //All nodes will this shape and colour
+  edge [color=Blue, style=dashed] //All the lines look like this
+
+  "in" -> "props.appear" [label="true"]
+  "props.appear" -> "initialStatus 为 exited, this.appearStatus 为 entering" [label="true"]
+  "props.appear" -> "initialStatus 为 entered, this.appearStatus 为 null" [label="false"]
+
+  "in" -> "(props.unmountOnExit || props.mountOnEnter)" [label="false"]
+  "(props.unmountOnExit || props.mountOnEnter)" -> "initialStatus 为 unmounted, this.appearStatus 为 null" [label="true"]
+  "(props.unmountOnExit || props.mountOnEnter)" -> "initialStatus 为 exited, this.appearStatus 为 null" [label="false"]
+  
+  "initialStatus 为 exited, this.appearStatus 为 null" -> "render: 此时 status 为 exited, 故渲染 exited 的样式 "
+  "render: 此时 status 为 exited, 故渲染 exited 的样式 " -> "componentDidMount" -> "this.updateStatus(true, null)" -> "nextStatus 为 null, unmountOnExit 为 false,因此 status 依旧为 exited" -> "初始化渲染 in = false 结束"
+  "初始化渲染 in = false 结束" -> "getDerivedStateFromProps" [label="用户点击,in 变为 true,但status为exited，故不更新status"]
+   "getDerivedStateFromProps" -> "componentDidUpdate-1" [label="渲染 exited 的样式"]
+   "componentDidUpdate-1" -> "prevProps(in为false)不等于this.props(in为true)" -> "status为 exited" -> "this.props.in 为 true" -> "(status为)exited !== entering && exited !== entered" -> "nextStatus 为 entering"
+  "nextStatus 为 entering" -> "this.updateStatus(false, entering)" -> "nextStatus为entering" -> "this.performEnter(node,false)"
+  "this.performEnter(node,false)" -> "this.safeSetState({status: 'entering'})" [label="执行 this.props.onEnter 钩子"]
+  "this.safeSetState({status: 'entering'})"-> "componentDidUpdate-2: nextProps等于this.props" [label="渲染 entering的样式"]
+  "componentDidUpdate-2: nextProps等于this.props" -> "this.updateStatus(false,null)" -> "nextStatus等于null且this.status=entering,故什么都不执行"
+  "nextStatus等于null且this.status=entering,故什么都不执行" -> "执行safeSetState回调：this.props.onEntering" -> "this.onTransitionEnd：timeout时间之后" -> "this.safeSetState({status:entered})" -> "componentDidUpdate-3: nextProps等于this.props" -> "this.updateStatus(false,null),依旧什么都不做"
+  "this.updateStatus(false,null),依旧什么都不做" -> "执行safeSetState回调：this.props.onEntered" -> "点击 in = true 结束"
+}

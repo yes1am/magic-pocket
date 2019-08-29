@@ -20,9 +20,12 @@ class Transition extends React.Component {
 
     let parentGroup = context
     // In the context of a TransitionGroup all enters are really appears
+
+    // enter: enable or disable enter transitions
     let appear =
       parentGroup && !parentGroup.isMounting ? props.enter : props.appear
 
+    // 没有 transitionGroup 的情况下 appear === props.appear, 即是否在 Transition 组件 mount 的时候出现
     let initialStatus
 
     this.appearStatus = null
@@ -48,6 +51,7 @@ class Transition extends React.Component {
   }
 
   static getDerivedStateFromProps ({ in: nextIn }, prevState) {
+    // console.log(nextIn, prevState.status, nextIn && prevState.status === UNMOUNTED)
     if (nextIn && prevState.status === UNMOUNTED) {
       return { status: EXITED }
     }
@@ -60,6 +64,7 @@ class Transition extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
+    console.log('didupdate1!!!!!!', prevProps !== this.props)
     let nextStatus = null
     if (prevProps !== this.props) {
       const { status } = this.state
@@ -219,6 +224,7 @@ class Transition extends React.Component {
   }
 
   render () {
+    console.log('render')
     const status = this.state.status
     if (status === UNMOUNTED) {
       return null
