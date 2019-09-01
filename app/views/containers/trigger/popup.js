@@ -19,35 +19,51 @@ const transitionStyles = {
   entered: { animation: 'none' },
   exiting: { animation: 'mymove2 200ms ease-in' },
   exited: { animation: 'none' }
-  // entering: { opacity: 1 },
-  // entered: { opacity: 1 },
-  // exiting: { opacity: 0 },
-  // exited: { opacity: 0 }
 }
 
 const align = {
-  points: ['tl', 'br']
+  points: ['tl', 'bl']
 }
 
 class Popup extends Component {
   constructor (props) {
     super(props)
     this.getTarget = this.getTarget.bind(this)
+    this.node = null
+    this.done = null
   }
   getTarget () {
     return ReactDOM.findDOMNode(this.props.wrap)
   }
+  componentWillUnmount () {
+    if (this.node) {
+      this.node.removeEventListener('animationend', this.done)
+    }
+  }
   render () {
     const { visible, children } = this.props
     return (
-      <Transition mountOnEnter unmountOnExit appear in={visible} timeout={duration}>
+      <Transition
+        mountOnEnter
+        unmountOnExit
+        appear
+        addEndListener={(node, done) => {
+          // we need addEndListener or timeout to say: "my animation is complete"
+          // but use timeout is not so reliable
+          this.node = node
+          this.done = done
+          node.addEventListener('animationend', this.done)
+        }}
+        in={visible}
+        timeout={duration}
+      >
         {state => {
           return <Align
             target={this.getTarget}
             monitorWindowResize
             align={align}
           >
-            <div className='hello' style={{
+            <div style={{
               ...defaultStyle,
               ...transitionStyles[state]
             }}>
@@ -61,14 +77,3 @@ class Popup extends Component {
 }
 
 export default Popup
-
-// {/* <Align
-//           target={this.getTarget}
-//           monitorWindowResize
-//           disabled={!visible}
-//           align={align}
-//         > */}
-//         <div className={'hello'} style={{ position: 'absolute' }}>
-//           {children}
-//         </div>
-//         {/* </Align> */}
